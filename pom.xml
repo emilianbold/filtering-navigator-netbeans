@@ -7,11 +7,11 @@
     <packaging>nbm</packaging>
     <name>Filtering Code Navigator</name>
     <description>Netbeans IDE plugin wih code navigator which shows only matching elemnts when searching.</description>
-    <url>https://github.com/s4gh/filtering-code-navigator</url>
+    <url>https://github.com/s4gh/filtering-navigator-netbeans</url>
     <scm>
-        <connection>scm:git:https://github.com/s4gh/filtering-code-navigator/</connection>
-        <url>https://github.com/s4gh/filtering-code-navigator</url>
-        <developerConnection>scm:git:https://github.com/s4gh/filtering-code-navigator/</developerConnection>
+        <connection>scm:git:https://github.com/s4gh/filtering-navigator-netbeans/</connection>
+        <url>https://github.com/s4gh/filtering-navigator-netbeans</url>
+        <developerConnection>scm:git:https://github.com/s4gh/filtering-navigator-netbeans/</developerConnection>
     </scm>
     <licenses>
         <license>
@@ -38,7 +38,7 @@
                 <configuration>
                     <licenseName>Apache License, Version 2.0</licenseName>
                     <licenseFile>${basedir}/LICENSE-2.0.txt</licenseFile>
-                    <distributionUrl>https://github.com/s4gh/filtering-code-navigator</distributionUrl>
+                    <distributionUrl>https://github.com/s4gh/filtering-navigator-netbeans</distributionUrl>
                     <codeNameBase>io.github.s4gh.navigator</codeNameBase>
                     <moduleDependencies>
                         <dependency>
