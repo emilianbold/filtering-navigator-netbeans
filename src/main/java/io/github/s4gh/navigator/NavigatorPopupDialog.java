@@ -44,7 +44,13 @@ public class NavigatorPopupDialog extends JDialog {
     public void toggleShowInherited() {
         javaMembersPanel.toggleShowInherited();
     }
-    
+
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension parentDimension = getParent().getSize();
+        Dimension halfOfParentDimension = new Dimension((int)Math.ceil(parentDimension.width / 2), (int)Math.ceil(parentDimension.height * 2 / 3));
+        return halfOfParentDimension;
+    }
 
     public void installShortcutBridge(JDialog dialog) {
         KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_F,

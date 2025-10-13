@@ -7,11 +7,13 @@ import javax.swing.Action;
 
 
 import java.io.IOException;
+import java.util.Set;
 import javax.lang.model.element.Element;
 
 import org.netbeans.api.java.source.ui.ElementOpen;
 import org.netbeans.api.java.source.ElementHandle;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.SourceUtils;
@@ -89,7 +91,7 @@ final class JavaNodes {
             this.data = data;
 
             setDisplayName(data.display);
-            setIconBaseWithExtension(iconFor(data.handle.getKind()));
+            setIconBaseWithExtension(iconFor(data.handle.getKind(), data.modifiers));
         }
 
         @Override
@@ -144,18 +146,37 @@ final class JavaNodes {
         }
     }
 
-    private static String iconFor(ElementKind kind) {
+    private static String iconFor(ElementKind kind, Set<Modifier> modifiers) {
+        String additionalQulifiers = getStaticQualifier(modifiers) + getVisibilityQualifier(modifiers);
         return switch (kind) {
             case RECORD        -> "icons/record.svg";
             case CLASS         -> "icons/class.svg";
             case INTERFACE     -> "icons/interface.svg";
             case ENUM          -> "icons/enum.svg";
             case ANNOTATION_TYPE -> "icons/class.svg";
-            case METHOD        -> "icons/method.svg";
-            case CONSTRUCTOR   -> "icons/constructor.svg";
-            case FIELD, ENUM_CONSTANT -> "icons/property.svg";
+            case METHOD        -> "icons/method" + additionalQulifiers + ".svg";
+            case CONSTRUCTOR   -> "icons/constructor"+ additionalQulifiers + ".svg";
+            case FIELD, ENUM_CONSTANT -> "icons/field" + additionalQulifiers + ".svg";
             default            -> "icons/defaultNode.svg";
         };
+    }
+    
+    private static String getStaticQualifier(Set<Modifier> modifiers){
+        if (modifiers.contains(Modifier.STATIC)) {
+            return "Static";
+        }
+        return "";
+    }
+    
+    private static String getVisibilityQualifier(Set<Modifier> modifiers){
+        if (modifiers.contains(Modifier.PUBLIC)) {
+            return "Public";
+        } else if (modifiers.contains(Modifier.PROTECTED)) {
+            return "Protected";
+        } else if (modifiers.contains(Modifier.PRIVATE)) {
+            return "Private";
+        }
+        return "";
     }
 
     /** Trigger preferred action on selected nodes (Enter key). */

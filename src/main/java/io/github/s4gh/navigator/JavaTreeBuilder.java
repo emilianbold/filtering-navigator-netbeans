@@ -18,10 +18,12 @@ final class JavaTreeBuilder {
         final String display;
         final ElementHandle<?> handle;
         final List<NodeData> children = new ArrayList<>();
+        final Set<Modifier> modifiers;
 
-        NodeData(String display, ElementHandle<?> handle) {
+        NodeData(String display, ElementHandle<?> handle, Set<Modifier> modifiers) {
             this.display = display;
             this.handle = handle;
+            this.modifiers = modifiers;
         }
     }
 
@@ -81,12 +83,12 @@ private NodeData buildTypeNode(CompilationInfo info, TypeElement type,
     
         ElementHandle<TypeElement> handle = ElementHandle.create(type);
         if (visited.contains(handle)) {
-            return new NodeData(simpleTypeName(type) + " (recursive)", handle);
+            return new NodeData(simpleTypeName(type) + " (recursive)", handle, type.getModifiers());
         }
         visited.add(handle);
         
         String typeName = simpleTypeName(type); // e.g. Outer.Inner
-        NodeData typeNode = new NodeData(typeName, ElementHandle.create(type));
+        NodeData typeNode = new NodeData(typeName, ElementHandle.create(type), type.getModifiers());
 
 
         List<? extends Element> members = includeInherited
@@ -114,14 +116,14 @@ private NodeData buildTypeNode(CompilationInfo info, TypeElement type,
         for (VariableElement f : fields) {
             if (isSynthetic(f, info)) continue;
             String disp = formatField(f);
-            typeNode.children.add(new NodeData(disp, ElementHandle.create(f)));
+            typeNode.children.add(new NodeData(disp, ElementHandle.create(f), f.getModifiers()));
         }
 
         // Methods
         for (ExecutableElement m : methods) {
             if (isSynthetic(m, info)) continue;
             String disp = formatMethod(m);
-            typeNode.children.add(new NodeData(disp, ElementHandle.create(m)));
+            typeNode.children.add(new NodeData(disp, ElementHandle.create(m), m.getModifiers()));
         }
 
         // Inner classes recursively
@@ -170,7 +172,11 @@ private NodeData buildTypeNode(CompilationInfo info, TypeElement type,
                 .map(p -> simpleType(p.asType())) // types only; add " + \" \" + p.getSimpleName()" if you prefer names too
                 .collect(Collectors.joining(", "));
         String ret = simpleType(m.getReturnType());
-        return m.getSimpleName() + "(" + params + "): " + ret;
+        Name name = m.getSimpleName();
+        if (m.getKind().equals(ElementKind.CONSTRUCTOR)) {
+            name = m.getEnclosingElement().getSimpleName();
+        }
+        return name + "(" + params + "): " + ret;
     }
 
     /**
